@@ -3,9 +3,20 @@
 
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
-
 #include <stdexcept>
+
+#ifdef _WIN32
+  #include <io.h>
+
+  #define open     _open
+  #define close    _close
+  #define fstat    _fstat
+  #define read     _read
+  #define stat     _stat
+  #define O_RDONLY (_O_RDONLY | _O_BINARY)
+#else
+  #include <unistd.h>
+#endif
 
 class File
 {

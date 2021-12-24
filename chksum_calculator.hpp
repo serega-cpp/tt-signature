@@ -22,9 +22,9 @@ public:
         : _block_size(block_size)
         , _mempool(block_size)
         , _chksums(blocks_count)
+        , _processed_bytes(0)
         , _terminate_producer(false)
         , _terminate_consumer(false)
-        , _processed_bytes(0)
     {
     }
 
@@ -60,7 +60,7 @@ public:
         for (;;) {
             auto ptr = _mempool.Get();
 
-            size_t size = read(fd, ptr.get(), _block_size);
+            int size = read(fd, ptr.get(), static_cast<unsigned int>(_block_size));
             if (size <= 0)
                 break; // eof or error
         
@@ -118,10 +118,10 @@ private:
     MemoryPool          _mempool;
     std::vector<ChkSum> _chksums;
 
+    std::atomic<size_t> _processed_bytes;
+
     bool _terminate_producer;
     bool _terminate_consumer;
-
-    std::atomic<size_t> _processed_bytes;
 };
 
 void ChksumCalculate(const char *src_fname, const char *dst_fname, size_t block_size, size_t consumers_count)

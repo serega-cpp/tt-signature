@@ -8,21 +8,22 @@ struct MemoryBlock
     size_t size;
     size_t id;
 
-    MemoryBlock(std::unique_ptr<char[]> &&ptr, size_t size, size_t id)
+    MemoryBlock(std::unique_ptr<char[]> &&ptr, size_t size, size_t id) noexcept
         : ptr(std::move(ptr))
         , size(size)
         , id(id) 
     {
     }
 
-    MemoryBlock(MemoryBlock &&src)
+    MemoryBlock(MemoryBlock &&src) noexcept
         : ptr(std::move(src.ptr))
         , size(src.size)
         , id(src.id)
     {
     }
 
-    MemoryBlock &operator = (MemoryBlock &&src) {
+    MemoryBlock &operator = (MemoryBlock &&src) noexcept
+    {
         ptr = std::move(src.ptr);
         size = src.size;
         id = src.id;
